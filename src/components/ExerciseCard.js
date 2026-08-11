@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {Button, Pagination, Stack, Typography} from '@mui/material';
+import {Button, Stack, Typography} from '@mui/material';
 
 const ExerciseCard = ({exercise}) => {
   return (

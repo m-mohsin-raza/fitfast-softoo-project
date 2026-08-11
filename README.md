@@ -1,6 +1,20 @@
-# Getting Started with Create React App
+# FitFast
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+FitFast is a React exercise library with searchable exercises, exercise details,
+related movements, and training-video links.
+
+## API configuration
+
+The exercise library now uses the free hosted [ExerciseDB V1 API](https://docs.ascendapi.com/products/edb-v1/overview).
+It does not require a RapidAPI subscription or an API key, so the app works after
+`npm start`.
+
+`REACT_APP_YOUTUBE_API_KEY` is optional. When supplied, video results use the
+[official YouTube Data API search endpoint](https://developers.google.com/youtube/v3/docs/search/list).
+Without it, the exercise library still works; the optional video section simply
+shows no external results.
+
+Never commit `.env`; it is already ignored by Git.
 
 ## Available Scripts
 
@@ -16,7 +30,9 @@ You may also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
+Launches the test runner in interactive watch mode. For one non-interactive run,
+use `CI=true npm test -- --watchAll=false` on macOS/Linux or
+`$env:CI='true'; npm.cmd test -- --watchAll=false` in PowerShell.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`

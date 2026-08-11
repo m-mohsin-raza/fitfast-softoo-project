@@ -7,21 +7,21 @@ const Footer = () => {
   return (
     <Box
     mt="80px"
-    bgcolor="#fff3f4"
+    bgcolor="#17221b"
     >
       <Stack
-      gap="40px"
+      gap="14px"
       alignItems="center"
       px="40px"
       pt="24px"
       >
-        <img src={Logo} alt="logo" width="100px" height="80px" alignItems="center" />
+        <img src={Logo} alt="FitFast" width="62px" height="50px" />
          <Typography
          alignItems="center"
           variant="h2" mt="5px"
           fontWeight="600"
           fontSize="1.5rem"
-          color="#ff2526">
+          color="#ffffff">
         FIT FAST
           </Typography>
         <Typography
@@ -29,7 +29,7 @@ const Footer = () => {
           variant="h5" pb="20px" mt="10px"
           fontSize="1rem"
           fontWeight="Bold">
-          Designed and Developed by Eng.Muhammad Mohsin Raza
+          Move with purpose. Train at your pace.
           </Typography>
       </Stack>
     </Box>

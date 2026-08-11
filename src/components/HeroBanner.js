@@ -1,36 +1,30 @@
 import React from 'react'
-import {Box, Stack, Typography, Button } from '@mui/material';
+import {Box, Typography, Button } from '@mui/material';
 
-import HeroBannerImage from '../assets/images/banner.png';
+import HeroBannerImage from '../assets/images/hero-fitness-professional.png';
  
 const HeroBanner = () => {
   return (
-    <Box sx={{
-      mt: {
-        lg: '212px', xs: '70px'
-      },
-      ml: {
-        sm: '50px'
-      }
-    }} position="relative" p="20px">
+    <Box className="hero-banner">
+      <Box className="hero-banner-copy">
       <Typography
        color="#FF2625"
        fontWeight="600"
        fontSize="2rem"
       >
-        Fit-Fast
+        FITFAST / TRAIN SMARTER
       </Typography>
 
     <Typography fontWeight={700}
     sx={{fontSize: {lg:'2.5rem', xs: '2.2rem'}}}
     mb="23px" mt="30px">
-      Sweat, Smile <br/> and Repeat
+      Build strength <br/> that lasts.
       
     </Typography>
 
      <Typography fontSize="1.5rem"
      lineHeight="35px" mb={4}>
-     Check out the most effective exercises
+     Discover exercises, muscle focus, and equipment guidance for every training day.
     </Typography>
 
     <Button 
@@ -39,24 +33,13 @@ const HeroBanner = () => {
     href="#exercises"
     sx={{backgroundColor:'#ff2625', padding:'10px'}}
     >
-      Explore Exercises
+      Explore library
     </Button>
-
-    <Typography
-    fontWeight={600}
-    color ="#ff2625"
-    sx={{
-      opacity:0.1,
-      display:{ lg: 'block', xs: 'none'}
-    }}
-    fontSize= "12.5rem"
-    >
-
-    </Typography>
+      </Box>
 
     <img 
     src={HeroBannerImage} 
-    alt="banner image"
+    alt="Workout banner"
     className="hero-banner-img"
     />
 

@@ -1,28 +1,43 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
-import {Stack} from '@mui/material';
+import {Link, NavLink} from 'react-router-dom';
+import {Button, Stack, Typography} from '@mui/material';
 import Logo from '../assets/images/Logo.png';
 
 const Navbar = () => {
   return (
     <Stack
     direction="row"
-    justifyContent="space-around"
-    sx={{gap:{sm:'122px', xs:'40px'}, mt: { sm:'32px', xs:'20px'}, justifyContent:'none'}} px="20px"
+    justifyContent="space-between"
+    alignItems="center"
+    sx={{ maxWidth: '1280px', mx: 'auto', mt: { sm:'24px', xs:'14px'}, gap: 2 }} px={{ xs: '16px', sm: '28px' }}
     >
       <Link to="/">
-      <img src={Logo} alt="Navbar logo" style={{width:'48px', height:'48px', margin:'0 20px'}
-      }/>
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <img src={Logo} alt="FitFast" style={{width:'42px', height:'42px'}} />
+        <Typography fontWeight={800} letterSpacing="-.04em" fontSize="1.25rem" color="#17221b">fitfast</Typography>
+      </Stack>
       </Link>
       <Stack
       direction="row"
-      gap="40px"
-      fontSize="24px"
-      alignItems="flex-end"
+      gap={{ xs: '16px', sm: '32px' }}
+      fontSize={{ xs: '15px', sm: '17px' }}
+      alignItems="center"
       >
-        <Link to="/" style={{textDecortion:'none', color:'#3A1212', borderBottom: '3px solid #FF2625'}}>Home</Link>
+        <NavLink to="/" style={({ isActive }) => ({
+          textDecoration: 'none',
+          color: '#3A1212',
+          borderBottom: isActive ? '3px solid #FF2625' : '3px solid transparent'
+        })}>Home</NavLink>
         <a href="#exercises" style={{textDecoration:'none', color:'#3A1212'}}>Exercises</a>
-        <a href="/" style={{textDecoration:'none', color:'#3A1212'}}>Login/Signup</a>
+        <Button
+          component={NavLink}
+          to="/auth"
+          variant="outlined"
+          color="error"
+          sx={{ textTransform: 'none', borderRadius: '999px', px: { xs: 1.5, sm: 2.5 }, whiteSpace: 'nowrap' }}
+        >
+          My training
+        </Button>
       </Stack>
     </Stack>
   )

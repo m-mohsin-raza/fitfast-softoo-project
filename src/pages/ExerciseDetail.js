@@ -2,41 +2,57 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 /*we imported this for determining ID of exercise we 
 currently on so we can fetch addition data of that exercise*/
-import {Box} from '@mui/material';
+import {Alert, Box} from '@mui/material';
 
-import {exerciseOptions, fetchData, youtubeOptions} from '../utils/fetchData';
+import {
+  getExerciseDetail,
+  getExerciseVideos,
+  getRelatedExercises
+} from '../services/exerciseApi';
 import Detail from '../components/Detail';
 import ExerciseVideos from '../components/ExerciseVideos';
 import SimilarExercises from '../components/SimilarExercises';
 
 const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState({});
-  const[exerciseVideos, setExerciseVideos] = useState([]);
-  const[targetMuscleExercises, setTargetMuscleExercises] = useState([]);
-  const[equipmentExercises, setEquipmentExercises] = useState([]);
+  const [exerciseVideos, setExerciseVideos] = useState([]);
+  const [targetMuscleExercises, setTargetMuscleExercises] = useState([]);
+  const [equipmentExercises, setEquipmentExercises] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
   const {id} = useParams();
 
   useEffect(() =>{
     const fetchExercisesData = async ()=>{
-      const exerciseDbUrl = 'https://exercisedb.p.rapidapi.com';
-      const youtubeSearchUrl = 'https://youtube-search-and-download.p.rapidapi.com';
+      setIsLoading(true);
+      setError('');
 
-      const exerciseDetailData = await fetchData(`${exerciseDbUrl}/exercises/exercise/${id}`,
-      exerciseOptions);
-      setExerciseDetail(exerciseDetailData);
+      try {
+        const exerciseDetailData = await getExerciseDetail(id);
+        setExerciseDetail(exerciseDetailData);
 
-      const exerciseVideosData = await fetchData(`${youtubeSearchUrl}/search?query=${exerciseDetailData.name}`
-      , youtubeOptions)
-      setExerciseVideos(exerciseVideosData.contents)
+        const [videos, relatedExercises] = await Promise.all([
+          getExerciseVideos(exerciseDetailData.name),
+          getRelatedExercises({
+            target: exerciseDetailData.target,
+            equipment: exerciseDetailData.equipment
+          })
+        ]);
 
-      const targetMuscleExercisesData = await fetchData(`${exerciseDbUrl}/exercises/target/
-      ${exerciseDetailData.target}`, exerciseOptions);
-      setTargetMuscleExercises(targetMuscleExercisesData);
+        setExerciseVideos(videos);
+        setTargetMuscleExercises(relatedExercises.targetMuscleExercises);
+        setEquipmentExercises(relatedExercises.equipmentExercises);
+      } catch (error) {
+        setExerciseDetail({});
+        setExerciseVideos([]);
+        setTargetMuscleExercises([]);
+        setEquipmentExercises([]);
+        setError(error.message || 'Unable to load exercise details right now.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      const equipmentExercisesData = await fetchData(`${exerciseDbUrl}/exercises/equipment/
-      ${exerciseDetailData.equipment}`, exerciseOptions);
-      setEquipmentExercises(equipmentExercisesData);
-    }
     fetchExercisesData();
   }, [id]);
 
@@ -45,9 +61,22 @@ const ExerciseDetail = () => {
 
   return (
     <Box>
+      {error ? (
+        <Alert severity="error" sx={{ mx: '20px', mt: '20px' }}>
+          {error}
+        </Alert>
+      ) : null}
       <Detail exerciseDetail={exerciseDetail}/>
-      <ExerciseVideos exerciseVideos={exerciseVideos} name={exerciseDetail.name}/>
-      <SimilarExercises targetMuscleExercises={targetMuscleExercises} equipmentExercises={equipmentExercises}/>
+      <ExerciseVideos
+        exerciseVideos={exerciseVideos}
+        name={exerciseDetail.name}
+        isLoading={isLoading}
+      />
+      <SimilarExercises
+        targetMuscleExercises={targetMuscleExercises}
+        equipmentExercises={equipmentExercises}
+        isLoading={isLoading}
+      />
     </Box>
   )
 }

@@ -4,11 +4,15 @@ import {Box, Stack,Typography} from '@mui/material';
 import HorizontalScrollbar from './HorizontalScrollbar';
 import Loader from './Loader';
 
-const SimilarExercises = (targetMuscleExercises, equipmentExercises) => {
+const SimilarExercises = ({
+  targetMuscleExercises,
+  equipmentExercises,
+  isLoading
+}) => {
   return (
     <Box
     sx={{
-      mt:{lg:'100x', xs:'0'}
+      mt:{lg:'100px', xs:'0'}
     }}
     >
      <Typography variant="h3" mb={5}>
@@ -17,11 +21,11 @@ const SimilarExercises = (targetMuscleExercises, equipmentExercises) => {
      <Stack
      direction="row"
      sx={{
-      p:'2', postion:'relative'
+      p:'2', position:'relative'
      }}
      >
-     {targetMuscleExercises.length ? <HorizontalScrollbar data={targetMuscleExercises}/>
-     :<Loader/>
+     {isLoading ? <Loader /> : targetMuscleExercises.length ? <HorizontalScrollbar data={targetMuscleExercises}/>
+     : <Typography color="#3A1212">No similar exercises were found.</Typography>
      }
      </Stack>
 
@@ -32,11 +36,11 @@ const SimilarExercises = (targetMuscleExercises, equipmentExercises) => {
      <Stack
      direction="row"
      sx={{
-      p:'2', postion:'relative'
+      p:'2', position:'relative'
      }}
      >
-     {equipmentExercises.length ? <HorizontalScrollbar data={equipmentExercises}/>
-     :<Loader/>
+     {isLoading ? <Loader /> : equipmentExercises.length ? <HorizontalScrollbar data={equipmentExercises}/>
+     : <Typography color="#3A1212">No similar exercises were found.</Typography>
      }
      </Stack>
     </Box>

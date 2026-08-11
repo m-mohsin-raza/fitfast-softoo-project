@@ -1,6 +1,7 @@
 body {
-  font-family: "Josefin Sans";
-  background-color: #fffafb;
+  font-family: Inter, "Segoe UI", sans-serif;
+  background: #f6f7f5;
+  color: #17221b;
 }
 
 * {
@@ -54,40 +55,70 @@ body {
 
 .hero-banner-img {
   position: absolute;
-  right: 40px;
-  top: 0px;
-  width: 700px;
-  height: 800px;
-  margin-top: -330px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-banner {
+  position: relative;
+  isolation: isolate;
+  min-height: 560px;
+  margin: 42px 20px 0;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #17221b;
+  display: flex;
+  align-items: center;
+}
+
+.hero-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(13, 20, 15, .96) 0%, rgba(13, 20, 15, .86) 34%, rgba(13, 20, 15, .16) 70%, transparent 100%);
+  z-index: 1;
+}
+
+.hero-banner-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  padding: 56px 7%;
+  color: #fff;
+}
+
+.search-panel {
+  padding: 8px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(23, 34, 27, .08);
 }
 
 .exercise-card {
-  width: 400px;
-  height: 445px;
-  background: #fff;
-  border-top: 4px solid #ff2625;
-  border-bottom-left-radius: 20px;
-  text-decoration: none;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  padding-bottom: 10px;
-  transform: scale(1, 1);
-  transition: 0.3s all ease-in-out;
+  border-top: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(23, 34, 27, .08);
 }
 
 .exercise-card img {
   height: 326px;
+  object-fit: cover;
 }
 
 .bodyPart-card {
-  transform: scale(1, 1);
-  transition: 0.3s all ease-in-out;
+  transform: translateY(0);
+  transition: .25s ease;
+  border: 1px solid #e4e8e3;
+  border-radius: 18px !important;
 }
 
 .exercise-card:hover,
 .bodyPart-card:hover {
-  transform: scale(1.1, 1.1);
+  transform: translateY(-8px);
 }
 
 .search-btn:hover {
@@ -102,6 +133,11 @@ body {
   width: 387px;
   height: 381px;
   text-decoration: none;
+}
+
+.MuiPagination-ul .Mui-selected {
+  background-color: #ff2625 !important;
+  color: #fff !important;
 }
 
 @media screen and (max-width: 1200px) {
@@ -120,7 +156,7 @@ body {
   }
 
   .hero-banner-img {
-    display: none;
+    opacity: .45;
   }
 
   .exercise-card {
@@ -130,6 +166,18 @@ body {
   .exercise-video {
     width: 320px;
     height: 300px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .hero-banner {
+    min-height: 500px;
+    margin: 24px 12px 0;
+    border-radius: 22px;
+  }
+
+  .hero-banner-copy {
+    padding: 44px 28px;
   }
 }
 

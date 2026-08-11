@@ -1,7 +1,13 @@
 import React from 'react';
 import {Box, Stack, Typography} from '@mui/material';
+import Loader from './Loader';
 
-const ExerciseVideos = ({exerciseVideos, name}) => {
+const ExerciseVideos = ({exerciseVideos, name, isLoading}) => {
+  const validVideos = (exerciseVideos || []).filter((item) => (
+    item?.video?.videoId && item.video?.title && item.video?.thumbnails?.[0]?.url
+  ));
+  const hasVideos = validVideos.length > 0;
+
   return (
     <Box
     sx={{
@@ -25,9 +31,15 @@ const ExerciseVideos = ({exerciseVideos, name}) => {
         gap:{lg:'80px', xs:'0'}
       }}
       >
-      {exerciseVideos?.slice(0,6).map((item, index) =>(
+      {isLoading ? <Loader /> : null}
+      {!isLoading && !hasVideos ? (
+        <Typography textAlign="center" color="#3A1212">
+          No related videos were found for this exercise yet.
+        </Typography>
+      ) : null}
+      {!isLoading ? validVideos.slice(0,6).map((item) =>(
         <a
-        key={index}
+        key={item.video.videoId}
         className="exercise-video"
         href={`https://www.youtube.com/watch?v=${item.video.videoId}`}
         target="_blank"
@@ -52,7 +64,7 @@ const ExerciseVideos = ({exerciseVideos, name}) => {
 
           </Box>
         </a>
-      ))}
+      )) : null}
       </Stack>
 
     </Box>

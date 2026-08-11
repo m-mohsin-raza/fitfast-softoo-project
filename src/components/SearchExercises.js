@@ -1,59 +1,68 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Stack, TextField, Typography} from '@mui/material'
+import {Alert, Box, Button, Stack, TextField, Typography} from '@mui/material'
 
-import {exerciseOptions, exercisesData, fetchData} from '../utils/fetchData';
+import {getBodyParts, searchExercises} from '../services/exerciseApi';
 
 import HorizontalScrollbar from './HorizontalScrollbar';
 
 const SearchExercises = ({setExercises, bodyPart, setBodyPart}) => {
   const [search, setSearch] = useState('');
   const [bodyParts, setBodyParts] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(()=>{
     const fetchExercisesData = async () =>{
-      const bodyPartsData = await fetchData('https://exercisedb.p.rapidapi.com/exercises/bodyPartList', exerciseOptions);
+      setError('');
 
-      setBodyParts(['all', ...bodyPartsData]);
-    }
+      try {
+        setBodyParts(await getBodyParts());
+      } catch (error) {
+        setBodyParts(['all']);
+        setError(error.message || 'Unable to load body parts right now.');
+      }
+    };
 
     fetchExercisesData();
-  },[])
+  },[]);
 /*this function is for handle change 
 and it is async because we have to fetch data from it.
 it will take sometime */
   const handleSearch = async()=>{
-    if(search){
-     const exercisesData = await fetchData
-     ('https://exercisedb.p.rapidapi.com/exercises', exerciseOptions);
+    const trimmedSearch = search.trim();
 
-     const searchedExercises = exercisesData.filter(
-      (exercise) => exercise.name.toLowerCase().includes(search)
-      ||exercise.target.toLowerCase().includes(search)
-      ||exercise.equipment.toLowerCase().includes(search)
-      ||exercise.bodyPart.toLowerCase().includes(search)
-     );
-// once we done with search then first of all we want to clear the search so
-     setSearch('');
-     setExercises(searchedExercises);
+    if(trimmedSearch){
+      setError('');
+
+      try {
+        const searchedExercises = await searchExercises(trimmedSearch);
+        setSearch('');
+        setExercises(searchedExercises);
+        setBodyPart('all');
+        window.scrollTo({top: 1800, left: 100, behavior: 'smooth'});
+      } catch (error) {
+        setError(error.message || 'Unable to search exercises right now.');
+      }
     }
-  }
+  };
   return (
     <Stack 
     alignItems="center"
-    mt="37px"
+    mt={{ xs: '44px', md: '72px' }}
     justifyContent="center"
     p="20px"
     >
      <Typography
      fontWeight={700} 
      sx={{fontSize:{lg:'44px',xs:'30px'}}}
-     mb="50px"
-     mt="100px"
+     mb="10px"
      textAlign="center"
      >
-      Awesome Exercises You <br/> Should Know</Typography>
+      Find your next movement</Typography>
+    <Typography color="#5d6a60" textAlign="center" mb="30px" maxWidth="620px">
+      Search by exercise, muscle group, body area, or equipment — then build a session that fits today.
+    </Typography>
 
-    <Box position="relative" mb="72px">
+    <Box position="relative" mb="42px" className="search-panel">
 
       <TextField
       sx={{
@@ -61,7 +70,7 @@ it will take sometime */
             fontWeight:'700',
             border:'none',
             borderRadius:'4px'},
-            width:{lg:'800px', xs:'350x'},
+            width:{lg:'760px', xs:'min(350px, 88vw)'},
             backgroundColor:'#fff',
             borderRadius:"4px"
       }}
@@ -70,7 +79,12 @@ it will take sometime */
       /*purpose of this function is to ensure there is no difference
        between caps or small letter while searching*/
       onChange={(e)=>setSearch(e.target.value.toLowerCase())}
-      placeholder="Search Exercises"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          handleSearch();
+        }
+      }}
+      placeholder="Try “dumbbell”, “chest”, or “squat”"
       type="text"
       />
 
@@ -87,12 +101,20 @@ it will take sometime */
         right: '0'
       }}
       onClick={handleSearch}
-      >Search</Button>
+      >Find</Button>
 
 
     </Box>
+    {error ? (
+      <Alert severity="warning" sx={{ mb: '24px', width: '100%', maxWidth: '800px' }}>
+        {error}
+      </Alert>
+    ) : null}
 
-    <Box sx={{position:'relative', width:'100%', p:'20px'}}>
+    <Typography fontWeight={700} color="#17221b" sx={{ alignSelf: 'flex-start', width: '100%', maxWidth: '1280px', px: '20px', mb: 1 }}>
+      Browse by focus area
+    </Typography>
+    <Box sx={{position:'relative', width:'100%', p:'20px', maxWidth: '1320px'}}>
       <HorizontalScrollbar data={bodyParts}
       // these are those body parts which we are clicked on 
       bodyPart={bodyPart} setBodyPart={setBodyPart} isBodyParts />

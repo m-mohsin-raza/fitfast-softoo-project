@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import Pagination from '@mui/material/Pagination';
-import {Box, Stack, Typography} from '@mui/material';
+import {Alert, Box, Stack, Typography} from '@mui/material';
 
-import {exerciseOptions, fetchData} from '../utils/fetchData';
+import {getExercises} from '../services/exerciseApi';
 import ExerciseCard from './ExerciseCard';
+import Loader from './Loader';
 
 const Exercises = ({exercises, setExercises, bodyPart}) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const exercisesPerPage = 9;
 
   const indexOfLastExercise =currentPage * exercisesPerPage;
@@ -23,19 +26,22 @@ const Exercises = ({exercises, setExercises, bodyPart}) => {
 
   useEffect(() =>{
     const fetchExercisesData = async () =>{
-      let exercisesData = [];
+      setIsLoading(true);
+      setError('');
 
-      if(bodyPart === 'all'){
-        exercisesData = await fetchData
-     ('https://exercisedb.p.rapidapi.com/exercises', exerciseOptions);
-      } else{
-        exercisesData = await fetchData
-     (`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`, exerciseOptions);
+      try {
+        setExercises(await getExercises(bodyPart));
+      } catch (error) {
+        setExercises([]);
+        setError(error.message || 'Unable to load exercises right now.');
+      } finally {
+        setIsLoading(false);
       }
-      setExercises(exercisesData);
-    }
+    };
+
+    setCurrentPage(1);
     fetchExercisesData();
-  } ,[bodyPart]);
+  } ,[bodyPart, setExercises]);
 
 
   return (
@@ -46,19 +52,30 @@ const Exercises = ({exercises, setExercises, bodyPart}) => {
     mt="50px"
     p="20px"
     >
-      <Typography variant="h3" mb="46px">
-         Showing Results
+      <Typography variant="h3" fontWeight={800} mb="8px">Exercise library</Typography>
+      <Typography color="#5d6a60" mb="36px">
+        {isLoading ? 'Loading exercises…' : `${exercises.length} movements ready to explore`}
       </Typography>
+      {error ? (
+        <Alert severity="error" sx={{ mb: '30px' }}>
+          {error}
+        </Alert>
+      ) : null}
       <Stack direction="row" 
-      stack={{
+      sx={{
         gap:{lg:'110px', xs:'50px'}
       }}
       flexWrap="wrap" justifyContent="center"
       >
-        {currentExercises.map((exercise, index)=>(
-         <ExerciseCard key={index} exercise={exercise}/>
+        {isLoading ? <Loader /> : currentExercises.map((exercise) =>(
+         <ExerciseCard key={exercise.id} exercise={exercise}/>
         ))}
       </Stack>
+      {!isLoading && !error && !currentExercises.length ? (
+        <Typography textAlign="center" mt="40px" color="#3A1212">
+          No exercises found for this selection.
+        </Typography>
+      ) : null}
       <Stack
         mt="100px"
         alignItems="center"
